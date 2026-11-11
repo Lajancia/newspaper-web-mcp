@@ -142,8 +142,18 @@ export function tryRegisterWebMCP(tools: WebMCPTool[]) {
 export function registerAll() {
   const tools = buildTools();
   installBridgeRegistry(tools);
-  const status = tryRegisterWebMCP(tools);
-  // eslint-disable-next-line no-console
-  console.info(`[webmcp] registration status: ${status}`);
-  return status;
+  // Retry: document.modelContext can appear after hydration (flag/OT timing),
+  // so a first-attempt "unsupported" must not be final.
+  const backoff = [0, 500, 1500, 4000];
+  let attempt = 0;
+  const run = (): string => {
+    const status = tryRegisterWebMCP(tools);
+    // eslint-disable-next-line no-console
+    console.info(`[webmcp] registration status: ${status}`);
+    if (status === "unsupported" && attempt < backoff.length - 1) {
+      setTimeout(run, backoff[++attempt]);
+    }
+    return status;
+  };
+  return run();
 }
