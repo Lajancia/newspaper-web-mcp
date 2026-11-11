@@ -49,6 +49,14 @@ All `execute()` methods are async and return `{ ok: true, ... }`.
 Enumerate tools via the browser's WebMCP discovery instead of step 2; the tool
 names, schemas and semantics are identical.
 
+## Personalized fill — TARA's Daily
+
+For content (what to fetch, which slot), follow `docs/fill-recipe.ko.md`:
+briefing of recent progress → upcoming schedule/deadlines → interest news
+(AI agents, frontend, freelance/B2B market, WebMCP standard) → today's tasks.
+Verified data only; deadlines computed in KST via `date`; news carries real
+`url` + `source`.
+
 ## Rules
 
 - Content data lives only in the open tab's memory. Never add persistence,
