@@ -135,7 +135,14 @@ export function tryRegisterWebMCP(tools: WebMCPTool[]) {
     (navigator as unknown as { modelContext?: ModelContextLike }).modelContext ??
     (document as unknown as { modelContext?: ModelContextLike }).modelContext;
   if (!mc) return "unsupported"; // feature-check: do NOT treat as success
-  for (const t of tools) mc.registerTool(t);
+  try {
+    for (const t of tools) mc.registerTool(t);
+  } catch (e) {
+    // HMR / double-call: Chrome throws InvalidStateError "Duplicate tool name".
+    const msg = e instanceof Error ? e.message : String(e);
+    if (/duplicate/i.test(msg)) return "already-registered";
+    throw e;
+  }
   return "registered";
 }
 
