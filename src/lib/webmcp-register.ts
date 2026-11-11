@@ -25,7 +25,7 @@ import {
 import { safeUrl, safeText } from "./sanitize";
 
 type ModelContextLike = {
-  registerTool: (t: unknown) => void;
+  registerTool: (t: unknown) => void | Promise<void>;
 };
 
 type WebMCPTool = {
@@ -127,7 +127,9 @@ export function installBridgeRegistry(tools: WebMCPTool[]) {
 }
 
 /** Native WebMCP registration (silent no-op where unsupported). */
-export function tryRegisterWebMCP(tools: WebMCPTool[]) {
+export async function tryRegisterWebMCP(
+  tools: WebMCPTool[],
+): Promise<string> {
   if (typeof window === "undefined") return "no-window";
   // Spec churn: the draft moved the API to document.modelContext (July 2026);
   // Chrome 150 deprecates the navigator form. Feature-detect both.
@@ -136,9 +138,10 @@ export function tryRegisterWebMCP(tools: WebMCPTool[]) {
     (document as unknown as { modelContext?: ModelContextLike }).modelContext;
   if (!mc) return "unsupported"; // feature-check: do NOT treat as success
   try {
-    for (const t of tools) mc.registerTool(t);
+    for (const t of tools) await mc.registerTool(t);
   } catch (e) {
-    // HMR / double-call: Chrome throws InvalidStateError "Duplicate tool name".
+    // HMR / StrictMode double-call: Chrome rejects with InvalidStateError
+    // "Duplicate tool name" — registration already succeeded, treat as ok.
     const msg = e instanceof Error ? e.message : String(e);
     if (/duplicate/i.test(msg)) return "already-registered";
     throw e;
@@ -153,8 +156,8 @@ export function registerAll() {
   // so a first-attempt "unsupported" must not be final.
   const backoff = [0, 500, 1500, 4000];
   let attempt = 0;
-  const run = (): string => {
-    const status = tryRegisterWebMCP(tools);
+  const run = async (): Promise<string> => {
+    const status = await tryRegisterWebMCP(tools);
     // eslint-disable-next-line no-console
     console.info(`[webmcp] registration status: ${status}`);
     if (status === "unsupported" && attempt < backoff.length - 1) {
