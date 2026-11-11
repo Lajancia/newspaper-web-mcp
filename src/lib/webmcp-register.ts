@@ -22,6 +22,7 @@ import {
   clearPaper,
   setPaperDate,
 } from "./newspaper-store";
+import { safeUrl, safeText } from "./sanitize";
 
 type WebMCPTool = {
   name: string;
@@ -40,7 +41,7 @@ export function buildTools(): WebMCPTool[] {
         properties: { date: { type: "string", description: "YYYY-MM-DD" } },
         required: ["date"],
       },
-      execute: async (a) => setPaperDate(String(a.date)),
+      execute: async (a) => setPaperDate(safeText(String(a.date), 10)),
     },
     {
       name: "add_headline",
@@ -58,10 +59,10 @@ export function buildTools(): WebMCPTool[] {
       },
       execute: async (a) =>
         addHeadline({
-          title: String(a.title),
-          url: a.url ? String(a.url) : undefined,
-          summary: a.summary ? String(a.summary) : undefined,
-          source: a.source ? String(a.source) : undefined,
+          title: safeText(String(a.title), 200),
+          url: safeUrl(a.url ? String(a.url) : undefined),
+          summary: safeText(a.summary ? String(a.summary) : undefined, 500),
+          source: safeText(a.source ? String(a.source) : undefined, 100),
         }),
     },
     {
@@ -80,10 +81,10 @@ export function buildTools(): WebMCPTool[] {
       },
       execute: async (a) =>
         addStory({
-          title: String(a.title),
-          body: String(a.body),
-          url: a.url ? String(a.url) : undefined,
-          source: a.source ? String(a.source) : undefined,
+          title: safeText(String(a.title), 200),
+          body: safeText(String(a.body), 1000),
+          url: safeUrl(a.url ? String(a.url) : undefined),
+          source: safeText(a.source ? String(a.source) : undefined, 100),
         }),
     },
     {
@@ -99,8 +100,8 @@ export function buildTools(): WebMCPTool[] {
       },
       execute: async (a) =>
         addTask({
-          text: String(a.text),
-          due: a.due ? String(a.due) : undefined,
+          text: safeText(String(a.text), 200),
+          due: a.due ? safeText(String(a.due), 20) : undefined,
         }),
     },
     {

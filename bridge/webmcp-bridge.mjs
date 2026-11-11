@@ -46,9 +46,18 @@ function connectCdp() {
   connectPromise = (async () => {
   const res = await fetch(`${CDP_HTTP}/json/list`);
   const targets = await res.json();
-  const page = targets.find(
-    (t) => t.type === "page" && t.webSocketDebuggerUrl && t.url.startsWith(PAGE_URL)
-  );
+  // Security: strict match — same origin AND same path (no prefix tricks like
+  // https://soominlab.com/newspaper-evil matching --url .../newspaper).
+  const want = new URL(PAGE_URL);
+  const page = targets.find((t) => {
+    if (t.type !== "page" || !t.webSocketDebuggerUrl) return false;
+    try {
+      const got = new URL(t.url);
+      return got.origin === want.origin && got.pathname === want.pathname;
+    } catch {
+      return false;
+    }
+  });
   if (!page) {
     throw new Error(
       `No tab matching ${PAGE_URL}. Open it in Chrome (started with --remote-debugging-port) first.`
