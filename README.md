@@ -31,3 +31,22 @@ npm run dev
 ```
 
 Note: native WebMCP registration is a feature-checked no-op in browsers without the API (`chrome://flags/#enable-webmcp-testing` on Chrome 146+ / origin trial from 149). The bridge registry (`window.__NEWSPAPER_TOOLS__`) works regardless.
+
+## Hermes setup (bridge)
+
+Any MCP client can fill the newspaper through `bridge/webmcp-bridge.mjs` (Node, deps: `ws`):
+
+1. Run Chrome with remote debugging and open the tab:
+   `open -a "Google Chrome" --args --remote-debugging-port=9222 --user-data-dir=... http://localhost:3000`
+2. Register the bridge in `~/.hermes/config.yaml`:
+
+```yaml
+mcp_servers:
+  webmcp:
+    command: node
+    args: ["/absolute/path/to/newspaper-web-mcp/bridge/webmcp-bridge.mjs",
+           "--cdp", "http://127.0.0.1:9222", "--url", "http://localhost:3000"]
+```
+
+Then ask: "fill the newspaper" — the agent sees `set_date / add_headline / add_story / add_task / clear_paper` as ordinary MCP tools. `bridge/test-messages.ndjson` is a ready-made stdio test transcript.
+

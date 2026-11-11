@@ -1,0 +1,6 @@
+{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}
+{"jsonrpc":"2.0","method":"notifications/initialized"}
+{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}
+{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"set_date","arguments":{"date":"2026-11-11"}}}
+{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"add_headline","arguments":{"title":"[브릿지 테스트] WebMCP-MCP 브릿지가 신문을 채웠다","url":"https://github.com/Lajancia/newspaper-web-mcp","summary":"Hermes 등 MCP 클라이언트가 stdio 브릿지를 통해 웹페이지의 WebMCP 도구를 호출 — 브라우저 네이티브 지원 없이도 계약 기반 채우기가 동작함을 확인.","source":"bridge/webmcp-bridge.mjs"}}}
+{"jsonrpc":"2.0","id":5,"method":"tools/call","params":{"name":"add_task","arguments":{"text":"브릿지 경로 end-to-end 검증","due":"21:30"}}}
