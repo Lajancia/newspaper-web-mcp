@@ -23,7 +23,7 @@ export default function Newspaper() {
   return (
     <div className="min-h-screen bg-[#faf9f6] text-[#111111]">
       {/* Masthead */}
-      <header className="border-b-2 border-black pt-8 pb-4">
+      <header className="relative border-b-2 border-black pt-8 pb-4">
         <div className="mx-auto max-w-5xl px-6 text-center">
           <p className="font-label-caps text-xs tracking-[0.35em] uppercase text-[#444748]">
             Agent-Filled Edition · Serverless · WebMCP
@@ -51,6 +51,14 @@ export default function Newspaper() {
             </Badge>
           </div>
         </div>
+        {/* PDF export — browser print-to-PDF preserves the broadsheet layout */}
+        <button
+          type="button"
+          onClick={() => window.print()}
+          className="no-print absolute right-4 top-4 border border-black/40 px-3 py-1 font-label-caps text-xs tracking-wider uppercase text-[#444748] hover:bg-[#efeeec] hover:text-[#111111] transition-colors cursor-pointer"
+        >
+          PDF로 저장
+        </button>
       </header>
 
       <main className="mx-auto max-w-5xl px-6 py-8 grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-8">

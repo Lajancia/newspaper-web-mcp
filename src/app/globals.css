@@ -115,3 +115,66 @@
   border-bottom: 1px solid #111111;
   height: 6px;
 }
+
+/* ── PDF export (window.print) — keep the broadsheet feel on paper ── */
+@media print {
+  /* A4 broadsheet-ish margins */
+  @page {
+    margin: 14mm 12mm;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  /* Kill screen paddings/width so the sheet uses the whole page */
+  main,
+  header > div,
+  footer {
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  main {
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+    padding-top: 16px !important;
+  }
+
+  /* Keep each article intact across page breaks */
+  article,
+  aside li {
+    break-inside: avoid;
+  }
+
+  /* Black on white, no hover artifacts */
+  * {
+    color: #111111 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Keep the double rules visible — printers drop light borders otherwise */
+  article,
+  aside li,
+  header,
+  footer {
+    print-color-adjust: exact;
+  }
+
+  /* URLs stay as text; links must not print as bare underlines */
+  a {
+    text-decoration: none !important;
+  }
+
+  footer {
+    border-top: 1px solid #111111 !important;
+  }
+}
