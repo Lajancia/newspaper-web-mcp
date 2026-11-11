@@ -14,7 +14,8 @@ const send = (method, params) => new Promise((res, rej) => {
 });
 ws.on("open", async () => {
   const list = await (await fetch("http://127.0.0.1:9223/json/list")).json();
-  const page = list.find(t => t.type === "page" && t.url.startsWith("http://localhost:3000"));
+  // Security: strict match (same origin AND same pathname), like webmcp-bridge.mjs.
+  const page = list.find(t => t.type === "page" && (() => { try { const u = new URL(t.url); return u.origin === "http://localhost:3000" && u.pathname === "/"; } catch { return false; } })());
   const att = await send("Target.attachToTarget", { targetId: page.id, flatten: true });
   const sessionId = att.sessionId;
   console.log("sessionId:", sessionId);

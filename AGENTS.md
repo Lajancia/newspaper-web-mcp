@@ -51,11 +51,14 @@ names, schemas and semantics are identical.
 
 ## Personalized fill — TARA's Daily
 
-For content (what to fetch, which slot), follow `docs/fill-recipe.ko.md`:
-briefing of recent progress → upcoming schedule/deadlines → interest news
-(AI agents, frontend, freelance/B2B market, WebMCP standard) → today's tasks.
-Verified data only; deadlines computed in KST via `date`; news carries real
-`url` + `source`.
+The personalized fill recipe is a LOCAL file, intentionally not committed to
+this public repo (it references private notes and milestones):
+
+    ~/.hermes/vault_repo/Ghost/03_Working_Knowledge/Tech_Stack/fill-recipe.ko.md
+
+In outline only: briefing of recent progress → upcoming schedule/deadlines →
+interest news → today's tasks. Verified data only; deadlines computed in KST
+via `date`; news carries real `url` + `source`.
 
 ## Rules
 

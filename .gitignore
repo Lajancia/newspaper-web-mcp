@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# personal fill recipe lives locally, never shipped
+docs/fill-recipe.ko.md

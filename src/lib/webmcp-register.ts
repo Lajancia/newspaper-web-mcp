@@ -24,6 +24,10 @@ import {
 } from "./newspaper-store";
 import { safeUrl, safeText } from "./sanitize";
 
+type ModelContextLike = {
+  registerTool: (t: unknown) => void;
+};
+
 type WebMCPTool = {
   name: string;
   description: string;
@@ -125,13 +129,11 @@ export function installBridgeRegistry(tools: WebMCPTool[]) {
 /** Native WebMCP registration (silent no-op where unsupported). */
 export function tryRegisterWebMCP(tools: WebMCPTool[]) {
   if (typeof window === "undefined") return "no-window";
-  const mc = (
-    navigator as unknown as {
-      modelContext?: {
-        registerTool: (t: WebMCPTool) => void;
-      };
-    }
-  ).modelContext;
+  // Spec churn: the draft moved the API to document.modelContext (July 2026);
+  // Chrome 150 deprecates the navigator form. Feature-detect both.
+  const mc =
+    (navigator as unknown as { modelContext?: ModelContextLike }).modelContext ??
+    (document as unknown as { modelContext?: ModelContextLike }).modelContext;
   if (!mc) return "unsupported"; // feature-check: do NOT treat as success
   for (const t of tools) mc.registerTool(t);
   return "registered";
